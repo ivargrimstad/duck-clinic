@@ -4,13 +4,15 @@
       xmlns:f="jakarta.faces.core"
       xmlns:ui="jakarta.faces.facelets">
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
-    <ui:define name="content">
 
-        <!-- ownerBean.prepareEdit is called via f:viewParam on page load -->
+    <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="ownerId" value="#{ownerBean.owner.id}"/>
             <f:viewAction action="#{ownerBean.prepareEdit(ownerBean.owner.id)}" onPostback="false"/>
         </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
 
         <h:link outcome="/owners/list" styleClass="back-link">← Back to Owners</h:link>
 
@@ -25,27 +27,27 @@
             </table>
         </div>
 
-        <h3>Pets</h3>
-        <h:dataTable value="#{ownerBean.owner.pets}" var="p" styleClass="table" headerClass="table-header"
-                     rowClasses="row-even,row-odd" rendered="#{not empty ownerBean.owner.pets}">
-            <h:column><f:facet name="header">Name</f:facet>#{p.name}</h:column>
-            <h:column><f:facet name="header">Type</f:facet>#{p.type.name}</h:column>
-            <h:column><f:facet name="header">Birth Date</f:facet>#{p.birthDate}</h:column>
+        <h3>Ducks</h3>
+        <h:dataTable value="#{ownerBean.owner.ducks}" var="d" styleClass="table" headerClass="table-header"
+                     rowClasses="row-even,row-odd" rendered="#{not empty ownerBean.owner.ducks}">
+            <h:column><f:facet name="header">Name</f:facet>#{d.name}</h:column>
+            <h:column><f:facet name="header">Type</f:facet>#{d.type.name}</h:column>
+            <h:column><f:facet name="header">Birth Date</f:facet>#{d.birthDate}</h:column>
             <h:column>
                 <f:facet name="header">Visits</f:facet>
                 <h:link outcome="/visits/list">
-                    <f:param name="petId" value="#{p.id}"/>
-                    View Visits (#{p.visits.size()})
+                    <f:param name="duckId" value="#{d.id}"/>
+                    View Visits (#{d.visits.size()})
                 </h:link>
             </h:column>
         </h:dataTable>
 
-        <p class="empty-msg" rendered="#{empty ownerBean.owner.pets}">No pets registered for this owner.</p>
+        <p class="empty-msg" rendered="#{empty ownerBean.owner.ducks}">No ducks registered for this owner.</p>
 
         <div class="form-actions">
-            <h:link outcome="/pets/list" styleClass="btn btn-primary">
+            <h:link outcome="/ducks/list" styleClass="btn btn-primary">
                 <f:param name="ownerId" value="#{ownerBean.owner.id}"/>
-                Add / Edit Pets
+                Add / Edit Ducks
             </h:link>
         </div>
     </ui:define>

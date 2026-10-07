@@ -1,7 +1,7 @@
 package dukes.rest;
 
 import dukes.model.Visit;
-import dukes.service.PetService;
+import dukes.service.DuckService;
 import dukes.service.VisitService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -19,12 +19,12 @@ public class VisitResource {
     private VisitService visitService;
 
     @Inject
-    private PetService petService;
+    private DuckService duckService;
 
     @GET
-    public List<Visit> list(@QueryParam("petId") Long petId) {
-        if (petId != null) {
-            return visitService.findByPet(petId);
+    public List<Visit> list(@QueryParam("duckId") Long duckId) {
+        if (duckId != null) {
+            return visitService.findByDuck(duckId);
         }
         return List.of();
     }

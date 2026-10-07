@@ -8,10 +8,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "vets")
+@SequenceGenerator(name = "vetSeq", sequenceName = "vet_seq", allocationSize = 1)
 public class Vet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vetSeq")
     private Long id;
 
     @NotBlank

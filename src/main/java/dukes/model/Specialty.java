@@ -6,10 +6,11 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "specialties")
+@SequenceGenerator(name = "specialtySeq", sequenceName = "specialty_seq", allocationSize = 1)
 public class Specialty {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "specialtySeq")
     private Long id;
 
     @NotBlank

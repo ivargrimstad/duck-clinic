@@ -3,20 +3,23 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core">
+<f:view>
+<ui:insert name="metadata"/>
+</f:view>
 <h:head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Jakarta EE Pet Store</title>
-    <h:outputStylesheet library="css" name="petstore.css"/>
+    <title>Jakarta EE Duck Clinic</title>
+    <h:outputStylesheet library="css" name="duckclinic.css"/>
 </h:head>
 <h:body>
     <nav class="navbar">
         <div class="navbar-brand">
-            <h:link outcome="/index" value="🐾 Pet Store"/>
+            <h:link outcome="/index" value="🦆 Duck Clinic"/>
         </div>
         <ul class="nav-links">
             <li><h:link outcome="/owners/list"  value="Owners"/></li>
-            <li><h:link outcome="/pets/list"    value="Pets"/></li>
+            <li><h:link outcome="/ducks/list"   value="Ducks"/></li>
             <li><h:link outcome="/vets/list"    value="Vets"/></li>
         </ul>
     </nav>
@@ -27,7 +30,7 @@
     </main>
 
     <footer class="footer">
-        <p>Jakarta EE Pet Store — powered by Jakarta EE 11</p>
+        <p>Jakarta EE Duck Clinic — powered by Jakarta EE 11</p>
     </footer>
 </h:body>
 </html>

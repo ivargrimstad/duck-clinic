@@ -1,5 +1,6 @@
 package dukes.model;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -9,10 +10,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "owners")
+@SequenceGenerator(name = "ownerSeq", sequenceName = "owner_seq", allocationSize = 1)
 public class Owner {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ownerSeq")
     private Long id;
 
     @NotBlank
@@ -40,9 +42,10 @@ public class Owner {
     @Column(name = "telephone", nullable = false, length = 20)
     private String telephone;
 
+    @JsonbTransient
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("name ASC")
-    private List<Pet> pets = new ArrayList<>();
+    private List<Duck> ducks = new ArrayList<>();
 
     public Owner() {}
 
@@ -64,8 +67,8 @@ public class Owner {
     public String getTelephone() { return telephone; }
     public void setTelephone(String telephone) { this.telephone = telephone; }
 
-    public List<Pet> getPets() { return pets; }
-    public void setPets(List<Pet> pets) { this.pets = pets; }
+    public List<Duck> getDucks() { return ducks; }
+    public void setDucks(List<Duck> ducks) { this.ducks = ducks; }
 
     public String getFullName() { return firstName + " " + lastName; }
 

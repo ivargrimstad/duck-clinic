@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="ownerId" value="#{duckBean.selectedOwnerId}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
+        <h1>Ducks#{duckBean.selectedOwnerId != null ? ' for Owner' : ''}</h1>
+
+        <h:link outcome="/owners/list" styleClass="back-link" rendered="#{duckBean.selectedOwnerId != null}">← Back to Owners</h:link>
+
+        <h:dataTable value="#{duckBean.ducks}" var="d" styleClass="table" headerClass="table-header"
+                     rowClasses="row-even,row-odd" rendered="#{not empty duckBean.ducks}">
+            <h:column><f:facet name="header">Name</f:facet>#{d.name}</h:column>
+            <h:column><f:facet name="header">Type</f:facet>#{d.type.name}</h:column>
+            <h:column><f:facet name="header">Birth Date</f:facet>#{d.birthDate}</h:column>
+            <h:column><f:facet name="header">Owner</f:facet>#{d.owner.fullName}</h:column>
+            <h:column>
+                <f:facet name="header">Actions</f:facet>
+                <h:form>
+                    <h:commandButton value="Edit" action="#{duckBean.prepareEdit(d.id)}" styleClass="btn btn-sm"/>
+                    <h:commandButton value="Delete" action="#{duckBean.delete(d.id)}" styleClass="btn btn-danger btn-sm"
+                                     onclick="return confirm('Delete #{d.name}?')"/>
+                    <h:link outcome="/visits/list" styleClass="btn btn-sm btn-info">
+                        <f:param name="duckId" value="#{d.id}"/>Visits
+                    </h:link>
+                </h:form>
+            </h:column>
+        </h:dataTable>
+
+        <p class="empty-msg" rendered="#{empty duckBean.ducks}">No ducks found.</p>
+
+        <div id="duck-form" class="form-section">
+            <h2>#{duckBean.duck.id == null ? 'Add New Duck' : 'Edit Duck'}</h2>
+            <h:form>
+                <div class="form-grid">
+                    <label>Name</label>
+                    <h:inputText value="#{duckBean.duck.name}" required="true" styleClass="input"/>
+
+                    <label>Birth Date (YYYY-MM-DD)</label>
+                    <h:inputText value="#{duckBean.duck.birthDate}" required="true" styleClass="input">
+                        <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
+                    </h:inputText>
+
+                    <label>Type</label>
+                    <h:selectOneMenu value="#{duckBean.selectedTypeId}" required="true" styleClass="input">
+                        <f:selectItems value="#{duckBean.duckTypes}" var="t" itemLabel="#{t.name}" itemValue="#{t.id}"/>
+                    </h:selectOneMenu>
+
+                    <label rendered="#{duckBean.selectedOwnerId == null}">Owner</label>
+                    <h:selectOneMenu value="#{duckBean.selectedDuckOwnerId}" required="true" styleClass="input"
+                                     rendered="#{duckBean.selectedOwnerId == null}">
+                        <f:selectItems value="#{duckBean.allOwners}" var="o" itemLabel="#{o.fullName}" itemValue="#{o.id}"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="form-actions">
+                    <h:commandButton value="Save" action="#{duckBean.save}" styleClass="btn btn-primary"/>
+                    <h:commandButton value="Cancel" action="#{duckBean.resetForm}" immediate="true" styleClass="btn btn-secondary"/>
+                </div>
+                <h:messages styleClass="field-errors"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

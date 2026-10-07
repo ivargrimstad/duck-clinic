@@ -1,5 +1,6 @@
 package dukes.model;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,11 +9,12 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "pets")
-public class Pet {
+@Table(name = "ducks")
+@SequenceGenerator(name = "duckSeq", sequenceName = "duck_seq", allocationSize = 1)
+public class Duck {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "duckSeq")
     private Long id;
 
     @NotBlank
@@ -28,17 +30,19 @@ public class Pet {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "type_id", nullable = false)
-    private PetType type;
+    private DuckType type;
 
+    @JsonbTransient
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonbTransient
+    @OneToMany(mappedBy = "duck", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("visitDate ASC")
     private java.util.List<Visit> visits = new java.util.ArrayList<>();
 
-    public Pet() {}
+    public Duck() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -49,8 +53,8 @@ public class Pet {
     public LocalDate getBirthDate() { return birthDate; }
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
 
-    public PetType getType() { return type; }
-    public void setType(PetType type) { this.type = type; }
+    public DuckType getType() { return type; }
+    public void setType(DuckType type) { this.type = type; }
 
     public Owner getOwner() { return owner; }
     public void setOwner(Owner owner) { this.owner = owner; }

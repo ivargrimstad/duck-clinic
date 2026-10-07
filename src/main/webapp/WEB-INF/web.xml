@@ -4,7 +4,7 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd"
          version="6.1">
 
-    <display-name>Jakarta EE Pet Store</display-name>
+    <display-name>Jakarta EE Duck Clinic</display-name>
 
     <!-- Jakarta Faces servlet -->
     <servlet>

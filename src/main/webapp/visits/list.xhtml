@@ -5,21 +5,19 @@
       xmlns:ui="jakarta.faces.facelets">
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="content">
-        <h1>Visits#{visitBean.pet != null ? ' for '.concat(visitBean.pet.name) : ''}</h1>
+        <h1>Visits#{visitBean.duck != null ? ' for '.concat(visitBean.duck.name) : ''}</h1>
 
         <h:link outcome="/owners/list" styleClass="back-link">← Back to Owners</h:link>
 
-        <!-- Pet summary -->
-        <div class="detail-card" rendered="#{visitBean.pet != null}">
+        <div class="detail-card" rendered="#{visitBean.duck != null}">
             <table class="detail-table">
-                <tr><th>Pet Name</th>  <td>#{visitBean.pet.name}</td></tr>
-                <tr><th>Type</th>      <td>#{visitBean.pet.type.name}</td></tr>
-                <tr><th>Birth Date</th><td>#{visitBean.pet.birthDate}</td></tr>
-                <tr><th>Owner</th>     <td>#{visitBean.pet.owner.fullName}</td></tr>
+                <tr><th>Duck Name</th> <td>#{visitBean.duck.name}</td></tr>
+                <tr><th>Type</th>      <td>#{visitBean.duck.type.name}</td></tr>
+                <tr><th>Birth Date</th><td>#{visitBean.duck.birthDate}</td></tr>
+                <tr><th>Owner</th>     <td>#{visitBean.duck.owner.fullName}</td></tr>
             </table>
         </div>
 
-        <!-- Visits table -->
         <h3>Visit History</h3>
         <h:dataTable value="#{visitBean.visits}" var="v" styleClass="table" headerClass="table-header"
                      rowClasses="row-even,row-odd" rendered="#{not empty visitBean.visits}">
@@ -35,7 +33,6 @@
         </h:dataTable>
         <p class="empty-msg" rendered="#{empty visitBean.visits}">No visits recorded yet.</p>
 
-        <!-- New visit form -->
         <div class="form-section">
             <h2>Add Visit</h2>
             <h:form>
@@ -44,7 +41,6 @@
                     <h:inputText value="#{visitBean.visit.visitDate}" required="true" styleClass="input">
                         <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
                     </h:inputText>
-
                     <label>Description</label>
                     <h:inputTextarea value="#{visitBean.visit.description}" required="true"
                                      rows="3" styleClass="input"/>

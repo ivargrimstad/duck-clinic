@@ -2,41 +2,62 @@ package dukes.service;
 
 import dukes.model.Visit;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
 public class VisitService {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Inject
+    private EntityManagerFactoryProducer emfp;
 
-    public List<Visit> findByPet(Long petId) {
-        return em.createQuery(
-                "SELECT v FROM Visit v WHERE v.pet.id = :petId ORDER BY v.visitDate DESC",
-                Visit.class)
-                 .setParameter("petId", petId)
-                 .getResultList();
+    public List<Visit> findByDuck(Long duckId) {
+        EntityManager em = emfp.createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT v FROM Visit v WHERE v.duck.id = :duckId ORDER BY v.visitDate DESC",
+                    Visit.class)
+                     .setParameter("duckId", duckId).getResultList();
+        } finally { em.close(); }
     }
 
     public Optional<Visit> findById(Long id) {
-        return Optional.ofNullable(em.find(Visit.class, id));
+        EntityManager em = emfp.createEntityManager();
+        try {
+            return Optional.ofNullable(em.find(Visit.class, id));
+        } finally { em.close(); }
     }
 
-    @Transactional
     public Visit save(Visit visit) {
-        if (visit.getId() == null) {
-            em.persist(visit);
-            return visit;
-        }
-        return em.merge(visit);
+        EntityManager em = emfp.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Visit result = (visit.getId() == null) ? persist(em, visit) : em.merge(visit);
+            em.getTransaction().commit();
+            return result;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        } finally { em.close(); }
     }
 
-    @Transactional
     public void delete(Long id) {
-        findById(id).ifPresent(em::remove);
+        EntityManager em = emfp.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Visit v = em.find(Visit.class, id);
+            if (v != null) em.remove(v);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        } finally { em.close(); }
+    }
+
+    private Visit persist(EntityManager em, Visit visit) {
+        em.persist(visit);
+        return visit;
     }
 }

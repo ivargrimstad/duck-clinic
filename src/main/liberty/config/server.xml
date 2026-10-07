@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<server description="Jakarta EE Pet Store">
+<server description="Jakarta EE Duck Clinic">
 
     <featureManager>
         <!-- Web Profile covers CDI, JAX-RS, JSF, Bean Validation, Servlet, JPA, JSON-B/P -->
         <feature>webProfile-11.0</feature>
-        <!-- Local EJB singletons for @Startup seed bean -->
-        <feature>enterpriseBeansLite-4.0</feature>
-        <!-- JDBC for the datasource -->
-        <feature>jdbc-4.2</feature>
-        <!-- JNDI for datasource lookup -->
+        <!-- JNDI still needed for other lookups -->
         <feature>jndi-1.0</feature>
         <!-- Dev-mode hot reload -->
         <feature>localConnector-1.0</feature>
@@ -19,17 +15,9 @@
                   httpPort="9080"
                   httpsPort="9443"/>
 
-    <!-- Derby JARs are copied to this directory by maven-dependency-plugin on every build -->
-    <library id="derbyLib">
-        <fileset dir="${server.config.dir}/resources/derby" includes="*.jar"/>
-    </library>
+    <!-- No server-managed datasource: DuckDB uses RESOURCE_LOCAL JPA with the
+         JDBC URL configured directly in persistence.xml -->
 
-    <dataSource id="petStoreDS" jndiName="jdbc/petstore">
-        <jdbcDriver libraryRef="derbyLib"/>
-        <properties.derby.embedded databaseName="${server.output.dir}/data/petstore"
-                                   createDatabase="create"/>
-    </dataSource>
-
-    <webApplication location="pet-store.war" contextRoot="/"/>
+    <webApplication location="duck-clinic.war" contextRoot="/"/>
 
 </server>

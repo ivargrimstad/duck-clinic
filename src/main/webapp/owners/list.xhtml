@@ -7,7 +7,6 @@
     <ui:define name="content">
         <h1>Owners</h1>
 
-        <!-- Search -->
         <div class="search-bar">
             <h:form>
                 <h:inputText value="#{ownerBean.searchLastName}" placeholder="Search by last name…" styleClass="input"/>
@@ -16,7 +15,6 @@
             </h:form>
         </div>
 
-        <!-- Owner table -->
         <h:dataTable value="#{ownerBean.owners}" var="o" styleClass="table" headerClass="table-header" rowClasses="row-even,row-odd" rendered="#{not empty ownerBean.owners}">
             <h:column>
                 <f:facet name="header">Name</f:facet>
@@ -29,8 +27,8 @@
             <h:column><f:facet name="header">City</f:facet>#{o.city}</h:column>
             <h:column><f:facet name="header">Telephone</f:facet>#{o.telephone}</h:column>
             <h:column>
-                <f:facet name="header">Pets</f:facet>
-                <ui:repeat value="#{o.pets}" var="p" varStatus="s">#{p.name}#{s.last ? '' : ', '}</ui:repeat>
+                <f:facet name="header">Ducks</f:facet>
+                <ui:repeat value="#{o.ducks}" var="d" varStatus="s">#{d.name}#{s.last ? '' : ', '}</ui:repeat>
             </h:column>
             <h:column>
                 <f:facet name="header">Actions</f:facet>
@@ -45,23 +43,18 @@
 
         <p class="empty-msg" rendered="#{empty ownerBean.owners}">No owners found.</p>
 
-        <!-- Add/Edit form -->
         <div id="owner-form" class="form-section">
             <h2>#{ownerBean.owner.id == null ? 'Add New Owner' : 'Edit Owner'}</h2>
             <h:form>
                 <div class="form-grid">
                     <label>First Name</label>
                     <h:inputText value="#{ownerBean.owner.firstName}" required="true" styleClass="input"/>
-
                     <label>Last Name</label>
                     <h:inputText value="#{ownerBean.owner.lastName}" required="true" styleClass="input"/>
-
                     <label>Address</label>
                     <h:inputText value="#{ownerBean.owner.address}" required="true" styleClass="input"/>
-
                     <label>City</label>
                     <h:inputText value="#{ownerBean.owner.city}" required="true" styleClass="input"/>
-
                     <label>Telephone (10 digits)</label>
                     <h:inputText value="#{ownerBean.owner.telephone}" required="true" styleClass="input"/>
                 </div>

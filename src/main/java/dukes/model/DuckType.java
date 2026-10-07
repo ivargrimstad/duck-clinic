@@ -5,11 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "pet_types")
-public class PetType {
+@Table(name = "duck_types")
+@SequenceGenerator(name = "duckTypeSeq", sequenceName = "duck_type_seq", allocationSize = 1)
+public class DuckType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "duckTypeSeq")
     private Long id;
 
     @NotBlank
@@ -17,9 +18,9 @@ public class PetType {
     @Column(name = "name", nullable = false, length = 80)
     private String name;
 
-    public PetType() {}
+    public DuckType() {}
 
-    public PetType(String name) {
+    public DuckType(String name) {
         this.name = name;
     }
 

@@ -1,5 +1,6 @@
 package dukes.model;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,10 +9,11 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "visits")
+@SequenceGenerator(name = "visitSeq", sequenceName = "visit_seq", allocationSize = 1)
 public class Visit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "visitSeq")
     private Long id;
 
     @NotNull
@@ -23,10 +25,11 @@ public class Visit {
     @Column(name = "description", nullable = false, length = 1024)
     private String description;
 
+    @JsonbTransient
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "pet_id", nullable = false)
-    private Pet pet;
+    @JoinColumn(name = "duck_id", nullable = false)
+    private Duck duck;
 
     public Visit() {}
 
@@ -39,6 +42,6 @@ public class Visit {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Pet getPet() { return pet; }
-    public void setPet(Pet pet) { this.pet = pet; }
+    public Duck getDuck() { return duck; }
+    public void setDuck(Duck duck) { this.duck = duck; }
 }

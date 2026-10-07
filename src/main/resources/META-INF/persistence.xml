@@ -4,20 +4,48 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
              version="3.2">
 
-    <persistence-unit name="petStorePU" transaction-type="JTA">
-        <jta-data-source>jdbc/petstore</jta-data-source>
+    <!-- RESOURCE_LOCAL: DuckDB JDBC driver does not implement XADataSource/JTA.
+         The JDBC URL is embedded here; no server datasource definition is needed. -->
+    <persistence-unit name="duckClinicPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
         <class>dukes.model.Owner</class>
-        <class>dukes.model.Pet</class>
-        <class>dukes.model.PetType</class>
+        <class>dukes.model.Duck</class>
+        <class>dukes.model.DuckType</class>
         <class>dukes.model.Visit</class>
         <class>dukes.model.Vet</class>
         <class>dukes.model.Specialty</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
-            <!-- Auto-create / update schema on deploy -->
-            <property name="jakarta.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
-            <property name="jakarta.persistence.schema-generation.create-source" value="metadata"/>
+            <property name="jakarta.persistence.jdbc.driver"   value="org.duckdb.DuckDBDriver"/>
+            <!-- File-based DuckDB: all connections share the same DB file.
+                 In-memory DuckDB gives each connection its own isolated DB,
+                 which means schema created on one connection is invisible to others.
+                 The actual URL is overridden at runtime by EntityManagerFactoryProducer
+                 which resolves the Liberty server output directory via system property. -->
+            <property name="jakarta.persistence.jdbc.url"      value="jdbc:duckdb:/tmp/duck_clinic.db"/>
+            <property name="jakarta.persistence.jdbc.user"     value=""/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+
+            <!-- Use our hand-written schema.sql — bypasses EclipseLink metadata DDL generation
+                 which fails on DuckDB due to unsupported system-catalog introspection queries.
+                 action=create means only the create-script runs; schema.sql handles its own
+                 DROP IF EXISTS + CREATE statements so it is always idempotent. -->
+            <property name="jakarta.persistence.schema-generation.database.action"
+                      value="create"/>
+            <property name="jakarta.persistence.schema-generation.create-source"
+                      value="script"/>
+            <property name="jakarta.persistence.schema-generation.create-script-source"
+                      value="META-INF/schema.sql"/>
+
+            <!-- EclipseLink: use PostgreSQL platform — DuckDB is PostgreSQL-compatible for
+                 sequences, and this platform maps GenerationType.SEQUENCE to native
+                 SELECT nextval('seq_name') rather than the SEQUENCE table-based fallback. -->
+            <property name="eclipselink.target-database"  value="PostgreSQL"/>
+            <!-- Log SQL for debugging -->
+            <property name="eclipselink.logging.level.sql"    value="FINE"/>
+            <property name="eclipselink.logging.parameters"   value="true"/>
         </properties>
     </persistence-unit>
 

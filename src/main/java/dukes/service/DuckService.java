@@ -1,6 +1,7 @@
 package dukes.service;
 
-import dukes.model.Owner;
+import dukes.model.Duck;
+import dukes.model.DuckType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -8,48 +9,53 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class OwnerService {
+public class DuckService {
 
     @Inject
     private EntityManagerFactoryProducer emfp;
 
-    public List<Owner> findAll() {
-        EntityManager em = emfp.createEntityManager();
-        try {
-            // JOIN FETCH ducks and their types so JSF list page can display duck names
-            return em.createQuery(
-                    "SELECT DISTINCT o FROM Owner o LEFT JOIN FETCH o.ducks d LEFT JOIN FETCH d.type ORDER BY o.lastName, o.firstName",
-                    Owner.class).getResultList();
-        } finally { em.close(); }
-    }
-
-    public List<Owner> findByLastName(String lastName) {
+    public List<Duck> findAll() {
         EntityManager em = emfp.createEntityManager();
         try {
             return em.createQuery(
-                    "SELECT DISTINCT o FROM Owner o LEFT JOIN FETCH o.ducks d LEFT JOIN FETCH d.type WHERE LOWER(o.lastName) LIKE LOWER(:name) ORDER BY o.lastName",
-                    Owner.class)
-                     .setParameter("name", "%" + lastName + "%")
-                     .getResultList();
+                    "SELECT d FROM Duck d JOIN FETCH d.owner JOIN FETCH d.type ORDER BY d.name",
+                    Duck.class).getResultList();
         } finally { em.close(); }
     }
 
-    public Optional<Owner> findById(Long id) {
+    public List<Duck> findByOwner(Long ownerId) {
         EntityManager em = emfp.createEntityManager();
         try {
-            // JOIN FETCH ducks and their types for the detail page
-            List<Owner> results = em.createQuery(
-                    "SELECT DISTINCT o FROM Owner o LEFT JOIN FETCH o.ducks d LEFT JOIN FETCH d.type WHERE o.id = :id",
-                    Owner.class).setParameter("id", id).getResultList();
+            return em.createQuery(
+                    "SELECT d FROM Duck d JOIN FETCH d.owner JOIN FETCH d.type WHERE d.owner.id = :ownerId ORDER BY d.name",
+                    Duck.class)
+                     .setParameter("ownerId", ownerId).getResultList();
+        } finally { em.close(); }
+    }
+
+    public Optional<Duck> findById(Long id) {
+        EntityManager em = emfp.createEntityManager();
+        try {
+            // JOIN FETCH owner and type so they're accessible after EM close
+            List<Duck> results = em.createQuery(
+                    "SELECT d FROM Duck d JOIN FETCH d.owner JOIN FETCH d.type WHERE d.id = :id",
+                    Duck.class).setParameter("id", id).getResultList();
             return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
         } finally { em.close(); }
     }
 
-    public Owner save(Owner owner) {
+    public List<DuckType> findAllTypes() {
+        EntityManager em = emfp.createEntityManager();
+        try {
+            return em.createQuery("SELECT t FROM DuckType t ORDER BY t.name", DuckType.class).getResultList();
+        } finally { em.close(); }
+    }
+
+    public Duck save(Duck duck) {
         EntityManager em = emfp.createEntityManager();
         try {
             em.getTransaction().begin();
-            Owner result = (owner.getId() == null) ? persist(em, owner) : em.merge(owner);
+            Duck result = (duck.getId() == null) ? persist(em, duck) : em.merge(duck);
             em.getTransaction().commit();
             return result;
         } catch (Exception e) {
@@ -62,8 +68,8 @@ public class OwnerService {
         EntityManager em = emfp.createEntityManager();
         try {
             em.getTransaction().begin();
-            Owner o = em.find(Owner.class, id);
-            if (o != null) em.remove(o);
+            Duck d = em.find(Duck.class, id);
+            if (d != null) em.remove(d);
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
@@ -71,8 +77,8 @@ public class OwnerService {
         } finally { em.close(); }
     }
 
-    private Owner persist(EntityManager em, Owner owner) {
-        em.persist(owner);
-        return owner;
+    private Duck persist(EntityManager em, Duck duck) {
+        em.persist(duck);
+        return duck;
     }
 }

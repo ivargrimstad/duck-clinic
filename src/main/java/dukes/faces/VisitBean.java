@@ -1,8 +1,8 @@
 package dukes.faces;
 
-import dukes.model.Pet;
+import dukes.model.Duck;
 import dukes.model.Visit;
-import dukes.service.PetService;
+import dukes.service.DuckService;
 import dukes.service.VisitService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -23,23 +23,23 @@ public class VisitBean implements Serializable {
     private VisitService visitService;
 
     @Inject
-    private PetService petService;
+    private DuckService duckService;
 
     private List<Visit> visits;
     private Visit visit = new Visit();
-    private Pet pet;
+    private Duck duck;
 
     @PostConstruct
     public void init() {
         visit.setVisitDate(LocalDate.now());
         Map<String, String> params = FacesContext.getCurrentInstance()
                 .getExternalContext().getRequestParameterMap();
-        String petIdParam = params.get("petId");
-        if (petIdParam != null) {
-            Long petId = Long.parseLong(petIdParam);
-            pet = petService.findById(petId).orElse(null);
-            visits = visitService.findByPet(petId);
-            if (pet != null) visit.setPet(pet);
+        String duckIdParam = params.get("duckId");
+        if (duckIdParam != null) {
+            Long duckId = Long.parseLong(duckIdParam);
+            duck = duckService.findById(duckId).orElse(null);
+            visits = visitService.findByDuck(duckId);
+            if (duck != null) visit.setDuck(duck);
         }
     }
 
@@ -49,19 +49,19 @@ public class VisitBean implements Serializable {
             new FacesMessage(FacesMessage.SEVERITY_INFO, "Visit saved!", null));
         visit = new Visit();
         visit.setVisitDate(LocalDate.now());
-        if (pet != null) {
-            visit.setPet(pet);
-            visits = visitService.findByPet(pet.getId());
+        if (duck != null) {
+            visit.setDuck(duck);
+            visits = visitService.findByDuck(duck.getId());
         }
     }
 
     public void delete(Long id) {
         visitService.delete(id);
-        if (pet != null) visits = visitService.findByPet(pet.getId());
+        if (duck != null) visits = visitService.findByDuck(duck.getId());
     }
 
     public List<Visit> getVisits() { return visits; }
     public Visit getVisit() { return visit; }
     public void setVisit(Visit visit) { this.visit = visit; }
-    public Pet getPet() { return pet; }
+    public Duck getDuck() { return duck; }
 }
