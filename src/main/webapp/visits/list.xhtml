@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="content">
+        <h1>Visits#{visitBean.pet != null ? ' for '.concat(visitBean.pet.name) : ''}</h1>
+
+        <h:link outcome="/owners/list" styleClass="back-link">← Back to Owners</h:link>
+
+        <!-- Pet summary -->
+        <div class="detail-card" rendered="#{visitBean.pet != null}">
+            <table class="detail-table">
+                <tr><th>Pet Name</th>  <td>#{visitBean.pet.name}</td></tr>
+                <tr><th>Type</th>      <td>#{visitBean.pet.type.name}</td></tr>
+                <tr><th>Birth Date</th><td>#{visitBean.pet.birthDate}</td></tr>
+                <tr><th>Owner</th>     <td>#{visitBean.pet.owner.fullName}</td></tr>
+            </table>
+        </div>
+
+        <!-- Visits table -->
+        <h3>Visit History</h3>
+        <h:dataTable value="#{visitBean.visits}" var="v" styleClass="table" headerClass="table-header"
+                     rowClasses="row-even,row-odd" rendered="#{not empty visitBean.visits}">
+            <h:column><f:facet name="header">Date</f:facet>#{v.visitDate}</h:column>
+            <h:column><f:facet name="header">Description</f:facet>#{v.description}</h:column>
+            <h:column>
+                <f:facet name="header">Actions</f:facet>
+                <h:form>
+                    <h:commandButton value="Delete" action="#{visitBean.delete(v.id)}" styleClass="btn btn-danger btn-sm"
+                                     onclick="return confirm('Delete this visit?')"/>
+                </h:form>
+            </h:column>
+        </h:dataTable>
+        <p class="empty-msg" rendered="#{empty visitBean.visits}">No visits recorded yet.</p>
+
+        <!-- New visit form -->
+        <div class="form-section">
+            <h2>Add Visit</h2>
+            <h:form>
+                <div class="form-grid">
+                    <label>Date (YYYY-MM-DD)</label>
+                    <h:inputText value="#{visitBean.visit.visitDate}" required="true" styleClass="input">
+                        <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
+                    </h:inputText>
+
+                    <label>Description</label>
+                    <h:inputTextarea value="#{visitBean.visit.description}" required="true"
+                                     rows="3" styleClass="input"/>
+                </div>
+                <div class="form-actions">
+                    <h:commandButton value="Add Visit" action="#{visitBean.save}" styleClass="btn btn-primary"/>
+                </div>
+                <h:messages styleClass="field-errors"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

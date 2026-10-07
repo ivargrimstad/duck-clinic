@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="content">
+        <h1>Owners</h1>
+
+        <!-- Search -->
+        <div class="search-bar">
+            <h:form>
+                <h:inputText value="#{ownerBean.searchLastName}" placeholder="Search by last name…" styleClass="input"/>
+                <h:commandButton value="Search" action="#{ownerBean.search}" styleClass="btn btn-primary"/>
+                <h:commandButton value="Show All" action="#{ownerBean.init}" immediate="true" styleClass="btn btn-secondary"/>
+            </h:form>
+        </div>
+
+        <!-- Owner table -->
+        <h:dataTable value="#{ownerBean.owners}" var="o" styleClass="table" headerClass="table-header" rowClasses="row-even,row-odd" rendered="#{not empty ownerBean.owners}">
+            <h:column>
+                <f:facet name="header">Name</f:facet>
+                <h:link outcome="/owners/detail">
+                    <f:param name="ownerId" value="#{o.id}"/>
+                    #{o.fullName}
+                </h:link>
+            </h:column>
+            <h:column><f:facet name="header">Address</f:facet>#{o.address}</h:column>
+            <h:column><f:facet name="header">City</f:facet>#{o.city}</h:column>
+            <h:column><f:facet name="header">Telephone</f:facet>#{o.telephone}</h:column>
+            <h:column>
+                <f:facet name="header">Pets</f:facet>
+                <ui:repeat value="#{o.pets}" var="p" varStatus="s">#{p.name}#{s.last ? '' : ', '}</ui:repeat>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Actions</f:facet>
+                <h:form>
+                    <h:commandButton value="Edit" action="#{ownerBean.prepareEdit(o.id)}" styleClass="btn btn-sm"
+                                     oncomplete="document.getElementById('owner-form').scrollIntoView()"/>
+                    <h:commandButton value="Delete" action="#{ownerBean.delete(o.id)}" styleClass="btn btn-danger btn-sm"
+                                     onclick="return confirm('Delete #{o.fullName}?')"/>
+                </h:form>
+            </h:column>
+        </h:dataTable>
+
+        <p class="empty-msg" rendered="#{empty ownerBean.owners}">No owners found.</p>
+
+        <!-- Add/Edit form -->
+        <div id="owner-form" class="form-section">
+            <h2>#{ownerBean.owner.id == null ? 'Add New Owner' : 'Edit Owner'}</h2>
+            <h:form>
+                <div class="form-grid">
+                    <label>First Name</label>
+                    <h:inputText value="#{ownerBean.owner.firstName}" required="true" styleClass="input"/>
+
+                    <label>Last Name</label>
+                    <h:inputText value="#{ownerBean.owner.lastName}" required="true" styleClass="input"/>
+
+                    <label>Address</label>
+                    <h:inputText value="#{ownerBean.owner.address}" required="true" styleClass="input"/>
+
+                    <label>City</label>
+                    <h:inputText value="#{ownerBean.owner.city}" required="true" styleClass="input"/>
+
+                    <label>Telephone (10 digits)</label>
+                    <h:inputText value="#{ownerBean.owner.telephone}" required="true" styleClass="input"/>
+                </div>
+                <div class="form-actions">
+                    <h:commandButton value="Save" action="#{ownerBean.save}" styleClass="btn btn-primary"/>
+                    <h:commandButton value="Cancel" action="#{ownerBean.resetForm}" immediate="true" styleClass="btn btn-secondary"/>
+                </div>
+                <h:messages styleClass="field-errors"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

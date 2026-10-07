@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Jakarta EE Pet Store</title>
+    <h:outputStylesheet library="css" name="petstore.css"/>
+</h:head>
+<h:body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h:link outcome="/index" value="🐾 Pet Store"/>
+        </div>
+        <ul class="nav-links">
+            <li><h:link outcome="/owners/list"  value="Owners"/></li>
+            <li><h:link outcome="/pets/list"    value="Pets"/></li>
+            <li><h:link outcome="/vets/list"    value="Vets"/></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <h:messages globalOnly="true" styleClass="messages" infoClass="msg-info" errorClass="msg-error"/>
+        <ui:insert name="content"><!-- page content goes here --></ui:insert>
+    </main>
+
+    <footer class="footer">
+        <p>Jakarta EE Pet Store — powered by Jakarta EE 11</p>
+    </footer>
+</h:body>
+</html>
