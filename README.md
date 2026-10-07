@@ -12,7 +12,7 @@ mvn clean package liberty:run
 ### Run with WildFly
 
 ```
-mvn clean package wildfly:run
+mvn clean package wildfly:run -Pwildfly
 ```
 
 ### Run with Payara
