@@ -1,7 +1,7 @@
-# Jakarta EE Pet Store
+# Jakarta EE Duck Clinic
 
 
-## Run the Jakarta EE Pet Store
+## Run the Jakarta EE Duck Clinic
 
 ### Run with Open Liberty
 
