@@ -77,7 +77,7 @@
                     </layers>
                 </configuration>
             </plugin>
-                        <plugin>
+            <plugin>
                 <groupId>fish.payara.maven.plugins</groupId>
                 <artifactId>payara-micro-maven-plugin</artifactId>
                 <version>2.6.0</version>
@@ -98,7 +98,15 @@
                 <configuration>
                     <payaraVersion>7.2026.9</payaraVersion>
                     <deployWar>true</deployWar>
-                    <contextRoot>agentic-duke</contextRoot>
+                    <contextRoot>duck-clinic</contextRoot>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.embedded</groupId>
+                <artifactId>embedded-glassfish-maven-plugin</artifactId>
+                <version>8.0</version>
+                <configuration>
+                     <glassfish.version>8.0.1</glassfish.version>
                 </configuration>
             </plugin>
         </plugins>
