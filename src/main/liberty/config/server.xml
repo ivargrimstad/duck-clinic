@@ -18,6 +18,6 @@
     <!-- No server-managed datasource: DuckDB uses RESOURCE_LOCAL JPA with the
          JDBC URL configured directly in persistence.xml -->
 
-    <webApplication location="duck-clinic.war" contextRoot="/"/>
+    <webApplication location="duck-clinic.war" contextRoot="/duck-clinic"/>
 
 </server>
